@@ -1,0 +1,106 @@
+@import "common";
+
+#app {
+
+    .content {
+        padding: 20px;
+        background-color: #fff;
+
+        .infos {
+            color: #444;
+
+            td {
+                height: 20px;
+            }
+
+            .name {
+                font-size: 26px;
+                color: #494949;
+                text-align: left;
+                padding-bottom: 20px;
+            }
+
+            .logo {
+                width: 220px;
+                height: 300px;
+                padding-right: 20px;
+
+                img {
+                    width: 200px;
+                    height: auto;
+                }
+            }
+        }
+
+        .stars {
+            margin-top: 30px;
+
+            ul {
+                display: flex;
+                flex-flow: row wrap;
+                align-content: center;
+                margin-top: 20px;
+
+                li {
+                    flex: 0 0 80px;
+                    margin-right: 20px;
+
+                    .head {
+                        display: block;
+                        width: 60px;
+                        height: 60px;
+                        margin: 0 auto 8px;
+                        background: no-repeat center;
+                        background-size: cover;
+                        border-radius: 50%;
+                    }
+
+                    .name,
+                    .roleName {
+                        display: block;
+                        width: 80px;
+                        text-align: center;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        color: #111;
+                        font-size: 14px;
+                    }
+
+                    .roleName {
+                        color: #9b9b9b;
+                    }
+
+                }
+            }
+        }
+
+        .videos {
+            padding: 0;
+            margin-top: 30px;
+
+            ul {
+                display: flex;
+                flex-flow: row wrap;
+                align-content: center;
+                margin-top: 20px;
+
+                li {
+                    flex: 0 0 80px;
+                    padding: 10px 0;
+                    text-align: center;
+                    color: #336699;
+                    border: 1px solid #ccddeb;
+                    border-radius: 4px;
+                    margin: 0 20px 10px 0;
+                    cursor: pointer;
+
+                    &:hover {
+                        color: rgb(254, 187, 1);
+                        border-color: rgba(254, 204, 1, .5);
+                    }
+                }
+            }
+        }
+    }
+}

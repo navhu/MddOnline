@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>静态页面列表</title>
+  <style>
+    *{
+      margin: 0;
+      padding: 0;
+    }
+    h1{
+      text-align: center;
+      font-size: 20px;
+      line-height: 35px;
+      font-weight: normal;
+    }
+    ul{
+      list-style: none;
+      width: 85%;
+      margin: 0 auto;
+    }
+    ul li{
+      line-height: 30px;
+      border-bottom: 1px dashed #999;
+    }
+    a{
+      text-decoration: none;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <h1>html列表</h1>
+  <ul>
+    <% for(var i=0; i<list.length;i++) { %>  
+          <li><a href="/static/<%= list[i] %>"><%= list[i] %></a></li>
+    <% } %>
+  </ul>
+</body>
+</html>

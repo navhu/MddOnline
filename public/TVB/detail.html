@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>埋堆堆 - 港剧在线观看</title>
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport"
+        content="minimal-ui,width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,viewport-fit=cover">
+    <meta name="format-detection" content="telephone=no, email=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="shortcut icon" href="./images/favicon.ico">
+    <link rel="stylesheet" href="./css/detail.css">
+    <script src="./js/vue.min.js"></script>
+    <script src="./js/axios.min.js"></script>
+</head>
+
+<body>
+
+    <div id="app">
+        <div class="header">
+            <div class="logo"></div>
+            <input class="search" v-model.trim="searchText" @keyup.enter="search(searchText)" type="text"
+                placeholder="搜索">
+        </div>
+
+        <div class="content">
+
+            <table class="infos" width="100%" cellspacing="0" cellpadding="0" border="0">
+                <tbody>
+                    <tr>
+                        <th class="name" colspan="2">{{infosData.name}}</th>
+                    </tr>
+                    <tr>
+                        <td class="logo" rowspan="9">
+                            <img :src="infosData.downImage" alt="">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>导演：{{infosData.director}}</td>
+                    </tr>
+                    <tr>
+                        <td>监制：{{infosData.monitor}}</td>
+                    </tr>
+                    <tr>
+                        <td>编剧：{{infosData.screenplay}}</td>
+                    </tr>
+                    <tr>
+                        <td>主演：{{infosData.starring}}</td>
+                    </tr>
+                    <tr>
+                        <td>集数：{{infosData.updateNum}}集 / 共{{infosData.totalNum}}集</td>
+                    </tr>
+                    <tr>
+                        <td>最后修改时间：{{infosData.lastModifyTime}}</td>
+                    </tr>
+                    <tr>
+                        <td>播放量：{{infosData.playNumStr}}</td>
+                    </tr>
+                    <tr>
+                        <td>简介：{{infosData.introduction}}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="stars">
+                <div class="title">相关演员</div>
+
+                <ul>
+                    <li v-for="(item, index) in starsData" :key="index">
+                        <span class="head" :style="{backgroundImage: 'url(' + item.headimgurl + ')'}"></span>
+                        <span class="name" :title="item.name">{{item.name}}</span>
+                        <span class="roleName" :title="item.roleName">{{item.roleName}}</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="videos">
+                <div class="title">播放列表</div>
+
+                <ul>
+                    <li v-for="(item, index) in videosData" :key="index" @click="open(item.uuid)">{{item.num}}集</li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="footer"></div>
+    </div>
+
+    <script src="./js/utils.js"></script>
+    <script>
+        const vm = new Vue({
+            el: '#app',
+            data: {
+                title: '详情页',
+                searchText: '',
+                detailData: {}
+            },
+            computed: {
+                infosData() {
+                    return this.detailData.infos || {};
+                },
+                starsData() {
+                    return this.detailData.stars || {};
+                },
+                videosData() {
+                    return this.detailData.videos || {};
+                }
+            },
+            mounted() {
+                var videoId = Utils.mapQuery(location.href).vodUuid || '';
+
+                if (videoId) {
+                    axios.all([this.infos(videoId), this.stars(videoId), this.videos(videoId)])
+                        .then(axios.spread((infosRes, starsRes, videosRes) => {
+                            console.log(infosRes.data);
+                            console.log(starsRes.data);
+                            console.log(videosRes.data);
+
+                            this.detailData = {
+                                infos: infosRes.data.data,
+                                stars: starsRes.data.data,
+                                videos: videosRes.data.data
+                            };
+                        }));
+
+                } else {
+                    window.location.href = './index.html';
+                }
+            },
+            methods: {
+                // 信息
+                infos(vodUuid) {
+                    return axios.post('/api/vod/getInfo.action', {
+                        "action": "/api/vod/getInfo.action",
+                        "data": {
+                            "supportTryWatch": 1,
+                            "vodUuid": vodUuid
+                        }
+                    })
+                },
+
+                // 明星
+                stars(vodUuid) {
+                    return axios.post('/api/vod/listVodStars.action', {
+                        'action': '/api/vod/listVodStars.action',
+                        'data': {
+                            'vodUuid': vodUuid
+                        }
+                    })
+                },
+
+                // 剧集
+                videos(vodUuid) {
+                    return axios.post('/api/vod/listVodSactions.action', {
+                        'action': '/api/vod/listVodSactions.action',
+                        'data': {
+                            'hasIntroduction': 0,
+                            'vodUuid': vodUuid
+                        }
+                    })
+                },
+
+                // 打开播放页
+                open(uuid) {
+                    window.open('./play.html?uuid=' + uuid);
+                }
+
+            }
+        })
+    </script>
+</body>
+
+</html>

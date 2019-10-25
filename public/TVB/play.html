@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>埋堆堆 - 港剧在线观看</title>
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport"
+        content="minimal-ui,width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,viewport-fit=cover">
+    <meta name="format-detection" content="telephone=no, email=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="shortcut icon" href="./images/favicon.ico">
+    <link rel="stylesheet" href="./css/DPlayer.min.css">
+    <link rel="stylesheet" href="./css/play.css">
+    <script src="./js/vue.min.js"></script>
+    <script src="./js/axios.min.js"></script>
+    <script src="./js/DPlayer.min.js"></script>
+</head>
+
+<body>
+
+    <div id="app">
+        <div class="header">
+            <div class="logo"></div>
+            <input class="search" v-model.trim="searchText" @keyup.enter="search(searchText)" type="text"
+                placeholder="搜索">
+        </div>
+
+        <div class="content">
+
+            <div class="title">正在播放：{{videoName}}</div>
+
+            <div id="dplayer"></div>
+
+        </div>
+
+        <div class="footer"></div>
+    </div>
+
+    <script src="./js/utils.js"></script>
+    <script>
+        const vm = new Vue({
+            el: '#app',
+            data: {
+                title: '播放页',
+                searchText: '',
+                playData: {}
+            },
+            computed: {
+                videoName() {
+                    return this.playData.name || '';
+                }
+            },
+            mounted() {
+                var uuid = Utils.mapQuery(location.href).uuid || '';
+
+                if (uuid) {
+                    this.play(uuid).then(() => {
+                        const dp = new DPlayer({
+                            container: document.querySelector('#dplayer'),
+                            lang: 'zh-cn',
+                            screenshot: true,
+                            preload: 'metadata',
+                            autoplay: true,
+                            video: {
+                                url: this.playData.oriUrl
+                            }
+                        });
+                    })
+
+                } else {
+                    window.location.href = './index.html';
+                }
+
+            },
+            methods: {
+                play(uuid) {
+                    return new Promise((resolve, reject) => {
+                        axios.post('/api/vod/getSaction.action', {
+                            'action': '/api/vod/getSaction.action',
+                            'data': {
+                                'sactionUuid': uuid
+                            }
+                        }).then(res => {
+                            console.log(res.data);
+
+                            this.playData = res.data.data;
+                            resolve(this.playData);
+                        }, err => {
+                            reject(err)
+                        });
+                    })
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
